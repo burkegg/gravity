@@ -4,9 +4,9 @@ let Vector = require('victor');
  */
 
 export class Balls {
-  constructor() {
+  constructor(G) {
     this.ballsList = []
-    this.G = 225
+    this.G = G
     this.locHistory = []
     this.timestep = .05
   }
@@ -15,29 +15,30 @@ export class Balls {
     // ballData as:  {x: initX, y: initY, Vx: initVx, Vy: initVy, mass: m}
     // Take in data and make appropriate vectors.
     // Store as: {pos: vector, vel: vector, mass: m}
+    // update locHistory with new array to push location data for this ball
     let pos = new Vector(ballData.x, ballData.y)
     let vel = new Vector(ballData.Vx, ballData.Vy)
     ballData = {pos: pos, vel: vel, mass: ballData.mass}
     this.ballsList.push(ballData)
-    this.locHistory.push([])
+    this.locHistory.push([pos])
   }
 
   getBalls = () => {
     return this.ballsList
-    // return this.ballsList.map(ball => {
-    //   return {x: ball.pos.x, y: ball.pos.y, Vx: ball.vel.x, Vy: ball.vel.y, mass: ball.mass}
-    // })
   }
 
-  getLocations = (speed) => {
-    let locations = []
-    this.locHistory.forEach((ballHistory, idx) => {
-      // lochistory is going to be [[...], [...], [...]]
-      locations.push(ballHistory)
+  getLocations = (speed = 1) => {
+    // given a speed: look at a nth location for each ball and return those positions.
+    // update the history so it doesn't grow forever.
+    let hist = this.locHistory
+    let currentPositions = []
+    console.log('hist hist hist ', hist)
+    hist.forEach((ballHistory, idx) => {
+      currentPositions.push(ballHistory[speed - 1])
+      hist[idx] = hist[idx].slice(speed)
     })
-    // this.locHistory = this.locHistory[idx].slice(speed)
-    console.log('locationsssssss', locations)
-    return locations
+    this.locHistory = hist
+    return currentPositions
   }
 
   manageBalls = () => {
@@ -46,7 +47,6 @@ export class Balls {
      */
     window.setInterval(()=>{
       let balls = this.ballsList
-      console.log("data in class:", this.locHistory)
       balls.forEach((ball, idx) => {
         // calc force, then do the math for that ball to update its position and velocity
         let f = this.calcNetForce(ball, idx)
@@ -63,7 +63,7 @@ export class Balls {
         balls[idx] = ball
         console.log('history:', this.locHistory)
       })
-    }, 55)
+    }, 100)
   }
 
   calcNetForce = (ball, idx) => {
