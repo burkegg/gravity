@@ -26,13 +26,13 @@ const Canvas = props => {
   }
 
   useEffect(() => {
-    let ballsData = new Balls()
+    let B = new Balls(500)
     //  {x: initX, y: initY, Vx: initVx, Vy: initVy, mass: m}
-    ballsData.addBall({x: 400, y: 300, Vx: 0, Vy: 0.04, mass: 10000})
-    ballsData.addBall({x: 800, y: 300, Vx: 0, Vy: -2, mass: 5})
-    // ballsData.addBall({x: 1000, y: 300, Vx: 0, Vy: 0, mass: 50})
+    B.addBall({x: 400, y: 300, Vx: 0, Vy: 1, mass: 150})
+    B.addBall({x: 800, y: 300, Vx: 0, Vy: -1, mass: 150})
+    // B.addBall({x: 1000, y: 300, Vx: 0, Vy: 0, mass: 50})
 
-
+    let loc = B.getLocations(1)
     const canvas = canvasRef.current
     canvas.width = 1300
     canvas.height = 1000
@@ -41,22 +41,21 @@ const Canvas = props => {
     let animationFrameId
     //Our draw came here
     var lastRender = Date.now();
-    ballsData.manageBalls()
-
+    B.manageBalls()
+    
     const render = () => {
       let a = Date.now()
       var delta = a - lastRender;
       lastRender = a
-      console.log("DELTA:", delta)
       // backGround(context)
       frameCount++
-      let ballsList = ballsData.getBalls()
-      console.log("data", ballsData.getLocations(1))
-      let locs = ballsData.getLocations(1)
-      ballsList.forEach((ball, idx) => {
-        if (!locs[idx]) return
-        showBall(context, frameCount, ballsData.getLocations(1)[idx][0].x, ballsData.getLocations(1)[idx][0].y)
-      })
+      let locs = B.getLocations(1)
+      // ballsList.forEach((ball, idx) => {
+      //   if (!locs[idx]) return
+      //   showBall(context, frameCount, B.getLocations()[idx][0].x, B.getLocations(1)[idx][0].y)
+      // })
+      let posHistory = B.getLocations()
+
 
       animationFrameId = window.requestAnimationFrame(render)
     }
