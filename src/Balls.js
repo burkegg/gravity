@@ -7,8 +7,10 @@ export class Balls {
   constructor(G) {
     this.ballsList = []
     this.G = G
-    this.locHistory = []
-    this.timestep = .05
+    this.locHistory = [] // [ [{pos: pos, vel: vel}, {pos: pos, vel: vel}], ...]
+    this.currTimestep = 0
+    this.numTimesteps = 0
+    this.sizeTimestep = .00005
   }
 
   addBall = (ballData) => {
@@ -20,25 +22,44 @@ export class Balls {
     let vel = new Vector(ballData.Vx, ballData.Vy)
     ballData = {pos: pos, vel: vel, mass: ballData.mass}
     this.ballsList.push(ballData)
-    this.locHistory.push([pos])
+    this.locHistory.push([{pos: pos, vel: vel, mass: ballData.mass}])
   }
 
   getBalls = () => {
     return this.ballsList
   }
 
-  getLocations = (speed = 1) => {
-    // given a speed: look at a nth location for each ball and return those positions.
-    // update the history so it doesn't grow forever.
+  getLatestData = () => {
+    // given an index, return the positions of all the balls at that index
     let hist = this.locHistory
-    let currentPositions = []
-    console.log('hist hist hist ', hist)
-    hist.forEach((ballHistory, idx) => {
-      currentPositions.push(ballHistory[speed - 1])
-      hist[idx] = hist[idx].slice(speed)
+    let latestData = []
+    hist.forEach((trajectory, idx) => {
+      latestData.push(trajectory[trajectory.length - 1])
     })
-    this.locHistory = hist
-    return currentPositions
+    return latestData
+  }
+
+  getDataToAnimate = (timestep) => {
+    console.log('timiestep', timestep)
+    console.log('num avail:', this.locHistory[0].length)
+
+    let hist = this.locHistory
+    if (timestep < 0) {
+      throw new Error("You went below zero")
+    }
+    let data = []
+    let correctNumber = this.getInfo().numBalls
+    for (let ballNum = 0; ballNum < correctNumber; ballNum++) {
+      if (!hist[ballNum][timestep] || !hist[ballNum][timestep].pos) {
+        timestep = hist[1].length - 1
+      }
+      data.push(hist[ballNum][timestep])
+    }
+    return data
+  }
+
+  updateTimestep = () => {
+    this.currTimestep += 1
   }
 
   manageBalls = () => {
@@ -49,55 +70,91 @@ export class Balls {
       let balls = this.ballsList
       balls.forEach((ball, idx) => {
         // calc force, then do the math for that ball to update its position and velocity
-        let f = this.calcNetForce(ball, idx)
-        let f2 = new Vector(0,0)
-        f2.copy(f)
-        let massVect = new Vector(ball.mass, ball.mass)
-        let a = f2.divide(massVect)
-        a.multiplyScalar(this.timestep)
-        ball.vel.addX(a)
-        ball.vel.addY(a)
-        ball.pos.addX(ball.vel)
-        ball.pos.addY(ball.vel)
-        // this.locHistory[idx].push(ball.pos)
-        balls[idx] = ball
-        console.log('history:', this.locHistory)
+        for (let i = 0; i < 4000; i++) {
+          this.moveBall(idx)
+        }
       })
-    }, 100)
+      this.updateTimestep()
+    }, 50)
   }
 
-  calcNetForce = (ball, idx) => {
-    // do 1/r2 for all other balls, unless super close.
+  moveBall = (idx) => {
+    let hist = this.getLatestData()
+    let currVel = new Vector(0, 0)
+    let currPos = new Vector(0, 0)
+    currVel.copy(hist[idx].vel)
+    currPos.copy(hist[idx].pos)
+    let mass = hist[idx].mass
+    let f = this.calcNetForce(idx)
+    let f2 = new Vector(0,0)
+    f2.copy(f)
+    let massVect = new Vector(mass, mass)
+    let a = f2.divide(massVect)
+    a.multiplyScalar(this.sizeTimestep)
+    // create new vel and pos vectors and push them into history
+    let newVel  = new Vector(currVel.x, currVel.y)
+    let newPos = new Vector(hist[idx].pos.x, hist[idx].pos.y)
+    /*
+    a = vf - vo / t
+    vf = at + vo
+     */
+    newVel.add(a)
+    let deltaPos = new Vector(newVel.x, newVel.y)
+    deltaPos.multiplyScalar(this.sizeTimestep)
+
+    // newVel.multiplyScalar(.5)
+    /*
+    v = xf - xo / t
+    xf = vt + xo
+     */
+    newPos.add(deltaPos)
+    // never added the data to the history?
+    let data = {pos: newPos, vel: newVel, mass: mass}
+    this.updateHistory(idx, data)
+  }
+
+  updateHistory = (idx, data) => {
+    this.locHistory[idx].push(data)
+  }
+
+  calcNetForce = (idx) => {
+    // add a row to the history
+    let info = []
+    this.locHistory.forEach(ballHistory => {
+      info.push(ballHistory[ballHistory.length - 1])
+    })
+    // info is the current state of all balls
+
     let netForce = new Vector(0,0)
-    this.ballsList.forEach((otherBall, otherIdx) => {
-      if (idx !== otherIdx) {
-        // console.log('pre:', netForce)
-        let f2Add = this.calcOneForce(otherBall, ball)
+
+    info.forEach((ballData, dataIdx) => {
+      if (idx !== dataIdx) {
+        let f2Add = this.calcOneForce(info[idx], info[dataIdx])
         netForce.add(f2Add)
-        // console.log('calc:', f2Add)
-        // console.log('post:', netForce)
       }
     })
     return netForce
   }
 
-  calcOneForce = (ball1, ball2) => {
-    // get the force on ball 1
-    // let s = Math.sqrt(ball.x - otherBall.x) ** 2 + (ball.y - otherBall.y) ** 2)
-    let s2 = ball1.pos.distanceSq(ball2.pos)
-    if (s2 < 150) {
-      let tooClose = new Vector(0, 0)
-      return tooClose
-    }// prevent infinity.  eventually make smooshes
 
-    let f = (this.G * ball1.mass * ball2.mass) / s2
-    // get normalized vector from ball1 to ball 2.  This will be force on ball 1.
-    // a - b gets you from a to b
+  getInfo = () => {
+    return { gravConstant: this.G, numBalls: this.ballsList.length, numTimesteps: this.numTimesteps, sizeTimestep: this.sizeTimestep, currTimestep: this.currTimestep }
+  }
 
-    let b1Copy = {}
-    b1Copy.pos = new Vector(0,0)
-    b1Copy.pos.copy(ball1.pos)
-    let fVector = b1Copy.pos.subtract(ball2.pos)
+  calcOneForce = (ballData1, ballData2) => {
+    // given which ball (e.g. ball1, ball2....) by index (0, 1, 2...)
+    // so we can get their mass and maybe look up other properties later if we need.
+
+    let s2 = ballData1.pos.distanceSq(ballData2.pos)
+
+    let f = (this.G * ballData1.mass * ballData2.mass) / (s2 + 0.2 * s2)
+    if (s2 < 5) {
+      f = 0
+    }
+    let b2Copy = {}
+    b2Copy.pos = new Vector(0,0)
+    b2Copy.pos.copy(ballData2.pos)
+    let fVector = b2Copy.pos.subtract(ballData1.pos)
     fVector.normalize()
     fVector.multiplyScalar(f)
     return fVector
