@@ -5,10 +5,10 @@ import {Balls} from './Balls'
 
 const Canvas = props => {
   const canvasRef = useRef(null)
-  const showBall = (ctx, frameCount, x, y) => {
+  const showBall = (ctx, x, y) => {
     ctx.fillStyle = '#f53d3d'
     ctx.beginPath()
-    ctx.rect(Math.round(x), Math.round(y), 1,1)
+    ctx.rect(Math.round(x), Math.round(y), 15,15)
     ctx.fill()
   }
 
@@ -28,29 +28,28 @@ const Canvas = props => {
     let timestep = 0
 
 
-    let B = new Balls(125)
-    B.addBall({x: 400, y: 300, Vx: 1, Vy: 5, mass: 150})
-    B.addBall({x: 600, y: 300, Vx: -1, Vy: -4, mass: 150})
-    B.addBall({x: 500, y: 350, Vx: 0, Vy: -2, mass: 50})
+    let B = new Balls(400)
+    B.addBall({x: 500, y: 500, Vx: 0, Vy: 0, mass: 1000})
+    B.addBall({x: 870, y: 500, Vx: 0, Vy: -25, mass: 20})
+    B.addBall({x: 890, y: 500, Vx: 0, Vy: -10, mass: 1})
+    // for (let i = 0; i < 5; i++) {
+    //   let x = Math.random() * 1000
+    //   let y = Math.random() * 1000
+    //   let Vx = Math.random() * 3
+    //   let Vy = Math.random() * 2
+    //   let mass = Math.random() * 200
+    //   B.addBall({x: x, y: y, Vx: Vx, Vy: Vy, mass: mass})
+    // }
     // start the trajectory data
-    B.manageBalls()
-
 
     const render = () => {
-      // backGround(context)
+      backGround(context)
       frameCount++
+      let ballData = B.moveBallSteps()
+      ballData.forEach(ball => {
+        showBall(context, ball.pos.x, ball.pos.y)
+      })
 
-      let data = B.getDataToAnimate(timestep)
-      // console.log('history', B.locHistory)
-      // console.log('data', data[0].vel)
-      timestep += 1000
-      if (data != null) {
-        for (let i = 0; i < data.length; i++) {
-          showBall(context, frameCount, data[i].pos.x, data[i].pos.y)
-        }
-      }
-
-      // let posHistory = B.getLocations()
       animationFrameId = window.requestAnimationFrame(render)
     }
 
