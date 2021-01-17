@@ -23,7 +23,7 @@ export class Balls {
     let vel = new Vector(ballData.Vx, ballData.Vy)
     ballData = {pos: pos, vel: vel, mass: ballData.mass}
     this.ballsList.push(ballData)
-    this.locHistory.push([{pos: pos, vel: vel, mass: ballData.mass}])
+    // this.locHistory.push([{pos: pos, vel: vel, mass: ballData.mass}])
   }
 
   getBalls = () => {
@@ -83,12 +83,13 @@ export class Balls {
 
   moveBallSteps = (ballNum) => {
     let iterateEachInTurn = []
-    for (let step = 0; step < 1500; step++) {
+    for (let step = 0; step < 1000; step++) {
       this.ballsList.forEach((ball, ballNum) => {
         let tempOneBallData = this.applyForce(ballNum)
         iterateEachInTurn[ballNum] = tempOneBallData
       })
     }
+    // TODO:  put the current position into the balls in ballsList
     return iterateEachInTurn
   }
 

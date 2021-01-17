@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React from 'react'
 const RightSide = props => {
 return (
   <div id='rightSide' style={{ display: 'flex', flexDirection: 'column'}}>
@@ -12,7 +12,7 @@ return (
         name="Number"
         id="numBallSelect"
         onChange={props.selectNumberBalls}
-        disabled={props.simulationRunning}
+        disabled={props.running}
       >
         <option value='select...'>Select...</option>
         <option value='1'>One</option>
@@ -24,7 +24,7 @@ return (
         className='ballsButton'
         onClick={props.startHandler}
       >
-        {`${props.animationState}`}
+        {`${props.running}`}
       </button>
       <button className='ballsButton'>
         Reset
