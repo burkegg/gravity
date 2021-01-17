@@ -14,6 +14,7 @@ export class Balls {
   }
 
   addBall = (ballData) => {
+    console.log('balldata:', ballData)
     // ballData as:  {x: initX, y: initY, Vx: initVx, Vy: initVy, mass: m}
     // Take in data and make appropriate vectors.
     // Store as: {pos: vector, vel: vector, mass: m}
@@ -81,21 +82,17 @@ export class Balls {
   }
 
   moveBallSteps = (ballNum) => {
-    let data = []
-    let tempOneBallData
     let iterateEachInTurn = []
     for (let step = 0; step < 1500; step++) {
       this.ballsList.forEach((ball, ballNum) => {
-        tempOneBallData = this.applyForce(ballNum)
+        let tempOneBallData = this.applyForce(ballNum)
         iterateEachInTurn[ballNum] = tempOneBallData
       })
     }
-    // data.push(stepData)
     return iterateEachInTurn
   }
 
   applyForce = (idx) => {
-    // let hist = this.getLatestData()
     let ballData = this.ballsList
     let currVel = new Vector(0, 0)
     let currPos = new Vector(0, 0)
