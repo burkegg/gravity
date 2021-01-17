@@ -9,6 +9,7 @@ class GravitySim extends React.Component {
     this.state = {
       animationInfo: [],
       running: false,
+      showTraces: false,
     }
     this.balls = new Balls(400)
   }
@@ -71,7 +72,8 @@ class GravitySim extends React.Component {
         <RightSide
           running={this.state.running}
           startHandler={this.stopStart}
-          selectNumberBalls={this.selectNumberBalls}/>
+          selectNumberBalls={this.selectNumberBalls}
+          ballsReady={this.state.animationInfo}/>
       </React.Fragment>
     )
   }

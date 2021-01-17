@@ -23,15 +23,14 @@ return (
       <button
         className='ballsButton'
         onClick={props.startHandler}
+        disabled={!props.ballsReady.length}
       >
-        {`${props.running}`}
+        {props.running ? "Stop" : "Start"}
       </button>
       <button className='ballsButton'>
         Reset
       </button>
     </div>
-
-
   </div>
 
   )
