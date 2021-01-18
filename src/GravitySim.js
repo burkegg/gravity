@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react'
+import React from 'react'
 
 import {Balls} from './Balls'
 import RightSide from "./RightSide";
+import GravCanvas from './GravCanvas'
 
 class GravitySim extends React.Component {
   constructor(props) {
@@ -17,7 +18,6 @@ class GravitySim extends React.Component {
     this.rAF = requestAnimationFrame(this.updateAnimationState);
   }
   updateAnimationState = () => {
-    // Update animation info here
     if (this.state.running) {
       this.balls.ballsList.forEach((ball, idx) => {
         let ballData = this.balls.moveBallSteps()
@@ -58,68 +58,33 @@ class GravitySim extends React.Component {
     this.setState({running: !this.state.running})
   }
 
+  handleDragDrop = (e) => {
+    console.log('dragDrop:', e)
+  }
+
   setInitBallInfoState = () => {
     let data = this.balls.getBalls()
     data.forEach((ball) => {
       this.setState({animationInfo: data})
     })
   }
+  toggleTraces = (e) => {
+    this.setState({traces: !this.state.traces})
+  }
 
   render() {
     return (
       <React.Fragment>
-        <Canvas locations={this.state.animationInfo} running={this.state.running}/>
+        <GravCanvas locations={this.state.animationInfo} running={this.state.running} traces={this.state.traces}/>
         <RightSide
           running={this.state.running}
           startHandler={this.stopStart}
           selectNumberBalls={this.selectNumberBalls}
-          ballsReady={this.state.animationInfo}/>
+          ballsReady={this.state.animationInfo}
+          toggleTraces={this.toggleTraces}/>
       </React.Fragment>
     )
   }
 }
-
-class Canvas extends React.Component{
-  constructor(props) {
-    super(props);
-    this.canvasRef = React.createRef();
-    //     const canvas = canvasRef.current
-
-
-  }
-
-  componentDidMount() {
-    this.canvasRef.current.width = document.getElementById('canvasContainer').clientWidth * 0.8
-    this.canvasRef.current.height = document.getElementById('canvasContainer').clientHeight
-
-  }
-
-  componentDidUpdate() {
-    const { locations, running } = this.props
-    if (running) {
-      locations.forEach(ball => {
-        this.showBall(ball.pos.x, ball.pos.y)
-      })
-    }
-  }
-  showBall = (x, y) => {
-    const canvas = this.canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#f53d3d'
-    ctx.beginPath()
-    ctx.rect(Math.round(x), Math.round(y), 4,4)
-    ctx.fill()
-  }
-
-  // backGround = ctx => {
-  //   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-  // }
-  render() {
-    return (
-      <canvas ref={this.canvasRef} style={{border:1, borderStyle: "solid"}}/>
-    )
-  }
-}
-
 
 export default GravitySim

@@ -30,6 +30,10 @@ return (
       <button className='ballsButton'>
         Reset
       </button>
+      <div>
+      <input type='checkbox' id='traceBox' name='traceBox' value='traces' onChange={props.toggleTraces} style={{width: 20, height: 20}}/>
+        <label htmlFor='traceBox'>Show Traces</label>
+      </div>
     </div>
   </div>
 
