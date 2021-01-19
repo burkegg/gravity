@@ -27,7 +27,10 @@ return (
       >
         {props.running ? "Stop" : "Start"}
       </button>
-      <button className='ballsButton'>
+      <button
+        className='ballsButton'
+        onClick={props.reset}
+        disabled={props.running}>
         Reset
       </button>
       <div>

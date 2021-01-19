@@ -14,20 +14,31 @@ export class Balls {
   }
 
   addBall = (ballData) => {
-    console.log('balldata:', ballData)
     // ballData as:  {x: initX, y: initY, Vx: initVx, Vy: initVy, mass: m}
     // Take in data and make appropriate vectors.
     // Store as: {pos: vector, vel: vector, mass: m}
     // update locHistory with new array to push location data for this ball
     let pos = new Vector(ballData.x, ballData.y)
     let vel = new Vector(ballData.Vx, ballData.Vy)
-    ballData = {pos: pos, vel: vel, mass: ballData.mass}
+    ballData = {pos: pos, vel: vel, mass: ballData.mass, color: ballData.color}
     this.ballsList.push(ballData)
     // this.locHistory.push([{pos: pos, vel: vel, mass: ballData.mass}])
   }
 
   getBalls = () => {
-    return this.ballsList
+    return [...this.ballsList]
+  }
+
+  getColors = () => {
+    return [...this.colors]
+  }
+
+  editBallLocation = (idx, locData) => {
+    let data = this.ballsList[idx]
+    if (data.pos) {
+      data.pos.x = locData.x
+      data.pos.y = locData.y
+    }
   }
 
   getLatestData = () => {
@@ -38,6 +49,10 @@ export class Balls {
       latestData.push(trajectory[trajectory.length - 1])
     })
     return latestData
+  }
+
+  resetBallLocations = data => {
+    this.ballsList = [...data]
   }
 
   getDataToAnimate = (timestep) => {
@@ -81,6 +96,10 @@ export class Balls {
     return allBallData
   }
 
+  clearBallsList = () => {
+    this.ballsList = []
+  }
+
   moveBallSteps = (ballNum) => {
     let iterateEachInTurn = []
     for (let step = 0; step < 1000; step++) {
@@ -89,7 +108,7 @@ export class Balls {
         iterateEachInTurn[ballNum] = tempOneBallData
       })
     }
-    // TODO:  put the current position into the balls in ballsList
+    // TODO:  put the current position into the balls in ballsList and everything uses that
     return iterateEachInTurn
   }
 
@@ -100,6 +119,7 @@ export class Balls {
 
     currVel.copy(ballData[idx].vel)
     currPos.copy(ballData[idx].pos)
+    let color = ballData[idx].color
     let mass = ballData[idx].mass
     let f = this.calcNetForce(idx)
     let f2 = new Vector(0,0)
@@ -125,7 +145,7 @@ export class Balls {
      */
     newPos.add(deltaPos)
     // never added the data to the history?
-    let data = {pos: newPos, vel: newVel, mass: mass}
+    let data = {pos: newPos, vel: newVel, mass: mass, color: color}
     this.ballsList[idx] = data
     return data
   }
