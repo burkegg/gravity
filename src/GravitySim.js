@@ -25,7 +25,7 @@ class GravitySim extends React.Component {
       // console.log('pre-animate:', this.state)
       this.balls.ballsList.forEach((ball, idx) => {
         let ballData = this.balls.moveBallSteps()
-        this.setState({animationInfo: ballData}, ()=>{console.log('init animated', this.state.initPositions[1].pos.x)})
+        this.setState({animationInfo: ballData})
       })
     }
     this.rAF = requestAnimationFrame(this.updateAnimationState);
