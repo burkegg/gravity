@@ -7,8 +7,10 @@ class GravCanvas extends React.Component{
       listeners: [],
       isDragging: false,
       whichBall: null,
+      dragOk: false,
     }
     this.canvasRef = React.createRef();
+    this.circles = []
   }
 
   componentDidMount() {
@@ -26,32 +28,40 @@ class GravCanvas extends React.Component{
     locations.forEach((ball, idx) => {
       this.showBall(ball.pos.x, ball.pos.y, ball.mass, idx, ball.color)
     })
-
   }
 
-  addEventListeners = (circle, idx) => {
+  addEventListeners = () => {
     const canvas = this.canvasRef.current;
     const ctx = canvas.getContext('2d');
     const { running, allowDragging } = this.props
 
     let handleMouseDown = (e) => {
+      if (running) {
+        return
+      }
       e.preventDefault();
       e.stopPropagation();
-      if (ctx.isPointInPath(circle, e.offsetX, e.offsetY)) {
-        this.setState({isDragging: true, whichBall: idx})
-      }
+      // See if we're inside any circles:
+      this.circles.forEach((circle, idx) => {
+        if (ctx.isPointInPath(circle, e.offsetX, e.offsetY)) {
+          this.setState({isDragging: true, whichBall: idx})
+        }
+      })
     }
+
     let handleMouseUp = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      this.setState({isDragging: false, whichball: null})
+      this.setState({isDragging: false, whichBall: null})
     }
+
+
     let handleMouseMove = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (this.state.isDragging && idx === this.state.whichBall) {
+      if (!running && this.state.isDragging) {
+        e.preventDefault();
+        e.stopPropagation();
         let mouseInfo = this.getMousePos(e)
-        this.props.handleDragDrop(mouseInfo, idx)
+        this.props.handleDragDrop(mouseInfo, this.state.whichBall)
       }
     }
     if (!running && allowDragging) {
@@ -70,6 +80,7 @@ class GravCanvas extends React.Component{
     circle.arc(Math.round(x), Math.round(y), 10, 0, 2 * Math.PI);
     ctx.fillStyle = color;
     ctx.fill(circle);
+    this.circles[idx] = circle
   }
 
   getMousePos(evt) {
