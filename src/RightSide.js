@@ -56,7 +56,6 @@ const RightSide = props => {
               </div>
             )
           })}
-          {props.animationInfo.length && <div>heyheyhey</div>}
         </div>
       </div>
       <div style={{position: 'absolute', bottom: 100, width: 200}}>
