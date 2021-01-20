@@ -74,6 +74,11 @@ export class Balls {
     this.ballsList = [...data]
   }
 
+  changeMass = (newMass, idx) => {
+    console.log('balls', this.ballsList, idx)
+    this.ballsList[idx].mass = newMass
+  }
+
   getDataToAnimate = (timestep) => {
 
     let hist = this.locHistory

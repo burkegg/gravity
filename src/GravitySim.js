@@ -24,7 +24,6 @@ class GravitySim extends React.Component {
   }
   updateAnimationState = () => {
     if (this.state.running) {
-      // console.log('pre-animate:', this.state)
       this.balls.ballsList.forEach((ball, idx) => {
         let ballData = this.balls.moveBallSteps()
         this.setState({animationInfo: ballData})
@@ -76,7 +75,6 @@ class GravitySim extends React.Component {
 
   handleVectorDrag = (e, idx) => {
     this.setState({ allowDragging: false })
-    console.log('handle idx:', idx)
     this.balls.editBallVelocity(idx, e)
     let data = this.balls.getBalls()
     this.setState({ animationInfo: data, initPositions: [...data]})
@@ -94,6 +92,15 @@ class GravitySim extends React.Component {
   toggleTraces = (e) => {
     this.setState({traces: !this.state.traces})
   }
+  handleChangeMass = (e) => {
+    let newMass = e.target.valueAsNumber
+    let idx = parseInt(e.target.id[e.target.id.length - 1])
+    if ( typeof newMass === 'number' && newMass > 0) {
+      this.balls.changeMass(newMass, idx)
+      let data = this.balls.getBalls()
+      this.setState({ animationInfo: data, initPositions: [...data]})
+    }
+  }
 
   render() {
     return (
@@ -110,9 +117,10 @@ class GravitySim extends React.Component {
           running={this.state.running}
           startHandler={this.stopStart}
           selectNumberBalls={this.selectNumberBalls}
-          ballsReady={this.state.animationInfo}
+          animationInfo={this.state.animationInfo}
           toggleTraces={this.toggleTraces}
-          reset={this.resetPositionsToInit}/>
+          reset={this.resetPositionsToInit}
+          handleChangeMass={this.handleChangeMass}/>
       </React.Fragment>
     )
   }
