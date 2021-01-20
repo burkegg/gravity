@@ -42,7 +42,7 @@ class GravitySim extends React.Component {
         b.addBall({x: 500, y: 500, Vx: 0, Vy: 1, mass: 1000, color: 'yellow'})
         break;
       case '2':
-        b.addBall({x: 500, y: 500, Vx: 0, Vy: 1, mass: 1000, color: 'yellow'})
+        b.addBall({x: 500, y: 500, Vx: 0, Vy: -20, mass: 1000, color: 'yellow'})
         b.addBall({x: 870, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'blue'})
         break;
       case '3':

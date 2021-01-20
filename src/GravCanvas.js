@@ -8,38 +8,51 @@ class GravCanvas extends React.Component{
       isDragging: false,
       whichBall: null,
       dragOk: false,
+      receivedLocs: false,
+      isDraggingVector: false,
+      vectorDragOk: false,
     }
     this.canvasRef = React.createRef();
     this.circles = []
     this.arrows = []
+    this.ballLocs = []
   }
 
   componentDidMount() {
     this.canvasRef.current.width = document.getElementById('canvasContainer').clientWidth * 0.8
     this.canvasRef.current.height = document.getElementById('canvasContainer').clientHeight
-    this.addBallEventListeners()
+    // this.addBallEventListeners()
   }
 
   componentDidUpdate() {
     const { locations } = this.props
+
+    this.ballLocs = [...locations]
     const canvas = this.canvasRef.current
     if (!this.props.traces) {
       this.backGround()
     }
     locations.forEach((ball, idx) => {
       this.showBall(ball.pos.x, ball.pos.y, ball.mass, idx, ball.color)
-      this.drawArrows()
     })
+    this.drawArrows()
+    if (locations.length && !this.state.receivedLocs) {
+      this.setState({receivedLocs: true}, () => {
+        this.addBallEventListeners()
+      })
+    }
   }
 
   drawArrows = () => {
+    // Maybe if I can return the arrows themselves?  I think I need to be able to test against the context when
+    // things have been rotated and translated - which isn't the ctx when we're doing the test.
     const canvas = this.canvasRef.current;
     const ctx = canvas.getContext('2d');
     const { running, locations } = this.props
     let width = 10
-    let height = 50
     if (!running) {
       locations.forEach((location, idx) => {
+        let height = Math.sqrt(location.vel.x ** 2 + location.vel.y ** 2)
         let pos = location.pos
         let vel = location.vel
         ctx.save()
@@ -49,17 +62,16 @@ class GravCanvas extends React.Component{
         let p = new Path2D()
         p.moveTo(-width / 2 + pos.x, 0 + pos.y)
         p.lineTo(width / 2 + pos.x, 0 + pos.y)
-        p.lineTo(width / 2 + pos.x,height-20 + pos.y)
-        p.lineTo(width / 2 +10 + pos.x, height-20 + pos.y)
-        p.lineTo(0 + pos.x, height + pos.y)
-        p.lineTo(0 - width / 2 - 10 + pos.x, height-20 + pos.y)
-        p.lineTo(-width / 2 + pos.x, height - 20 + pos.y)
+        p.lineTo(width / 2 + pos.x,height + pos.y)
+        p.lineTo(width / 2 +10 + pos.x, height + pos.y)
+        p.lineTo(0 + pos.x, height + 20 + pos.y)
+        p.lineTo(0 - width / 2 - 10 + pos.x, height + pos.y)
+        p.lineTo(-width / 2 + pos.x, height + pos.y)
         p.closePath()
         ctx.stroke(p)
         // ctx.fill(p)
         this.arrows[idx] = p
         ctx.restore()
-
       })
     }
   }
@@ -73,6 +85,25 @@ class GravCanvas extends React.Component{
     const canvas = this.canvasRef.current;
     const ctx = canvas.getContext('2d');
     const { running, allowDragging } = this.props
+    let locations = this.ballLocs
+
+    let arrowDetectSelect = (location, idx, e) => {
+      // Takes in locations of the balls and changes the context to the appropriately translated / rotated one.
+      // Will
+      let arrow = this.arrows[idx]
+      let pos = location.pos
+      let vel = location.vel
+      // The arrows don't know their own canvas context (translate, rotate, etc)
+      ctx.save()
+      ctx.translate(pos.x, pos.y)
+      ctx.rotate(this.angleBetweenPoints(vel) * Math.PI / 180)
+      ctx.translate(-pos.x, -pos.y)
+      if (ctx.isPointInPath(arrow, e.offsetX, e.offsetY)) {
+        console.log('inside arrow', idx)
+      }
+      ctx.restore()
+    }
+
 
     let handleMouseDown = (e) => {
       if (running) {
@@ -86,10 +117,10 @@ class GravCanvas extends React.Component{
           this.setState({isDragging: true, whichBall: idx})
         }
       })
-      this.arrows.forEach((arrow, idx) => {
-        if (ctx.isPointInPath(arrow, e.offsetX, e.offsetY)) {
-          console.log('inside arrow')
-        }
+
+      locations.forEach((location, idx) => {
+        // Edit the context here and wrap the test in context switch - then return to normal after
+        arrowDetectSelect(location, idx, e)
       })
     }
 
