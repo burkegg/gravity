@@ -1,18 +1,6 @@
 import React from 'react'
 const RightSide = props => {
   const { animationInfo } = props
-  let massEntry = () => {
-    // if (!animationInfo || !animationInfo.length) {
-    //   return null
-    // }
-
-
-    return (
-      <div>heyheyhey</div>
-    )
-  }
-
-
   return (
     <div id='rightSide' style={{ display: 'flex', flexDirection: 'column'}}>
       <h2 id='rightSideHeader'>
@@ -54,12 +42,12 @@ const RightSide = props => {
           {props.animationInfo.map((ballInfo, idx) => {
             return(
               <div key={`$mass${idx}key`}>
-                <div style={{marginTop: 20}}>
+                <div style={{marginTop: 20, fontSize: 16, marginBottom: 5}}>
                   <label htmlFor={`mass${idx}`} >Mass for object {idx + 1}</label>
                 </div>
                 <div style={{marginBottom: 20}}>
                   <input onChange={props.handleChangeMass} type="number" id={`massEntry${idx}`} name={`${idx}`}
-                         min="1" max="1000" placeholder={`${ballInfo.mass}`} style={{width: 100, height: 30}}/>
+                         min="1" max="1000" placeholder={`${ballInfo.mass}`} style={{width: 100, height: 30, fontSize: 17, textAlign: 'center'}}/>
                 </div>
               </div>
             )

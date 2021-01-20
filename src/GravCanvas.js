@@ -156,7 +156,19 @@ class GravCanvas extends React.Component{
     const ctx = canvas.getContext('2d');
     // Create circle
     const circle = new Path2D();
-    circle.arc(Math.round(x), Math.round(y), 10, 0, 2 * Math.PI);
+    let r
+    if (m > 800) {
+      r = 15
+    } else if (m > 600) {
+      r = 12
+    } else if (m > 400) {
+      r = 10
+    } else if (m > 100) {
+      r = 8
+    } else {
+      r = 6
+    }
+    circle.arc(Math.round(x), Math.round(y), r, 0, 2 * Math.PI);
     ctx.fillStyle = color;
     ctx.fill(circle);
     this.circles[idx] = circle
