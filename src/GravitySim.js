@@ -44,17 +44,17 @@ class GravitySim extends React.Component {
         break;
       case '2':
         b.addBall({x: 500, y: 500, Vx: 0, Vy: -20, mass: 1000, color: 'yellow'})
-        b.addBall({x: 50, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'blue'})
+        b.addBall({x: 50, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'aqua'})
         break;
       case '3':
         b.addBall({x: 500, y: 500, Vx: 0, Vy: 1, mass: 1000, color: 'yellow'})
-        b.addBall({x: 870, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'blue'})
-        b.addBall({x: 890, y: 500, Vx: 0, Vy: -10, mass: 1, color: 'green'})
+        b.addBall({x: 870, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'aqua'})
+        b.addBall({x: 890, y: 500, Vx: 0, Vy: -10, mass: 1, color: 'springGreen'})
         break;
       case '4':
         b.addBall({x: 500, y: 500, Vx: 0, Vy: 1, mass: 1000, color: 'yellow'})
-        b.addBall({x: 870, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'blue'})
-        b.addBall({x: 890, y: 500, Vx: 0, Vy: -10, mass: 1, color: 'green'})
+        b.addBall({x: 870, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'aqua'})
+        b.addBall({x: 890, y: 500, Vx: 0, Vy: -10, mass: 1, color: 'springGreen'})
         b.addBall({x: 250, y: 200, Vx: 5, Vy: 5, mass: 1, color: 'red'})
         break;
     }

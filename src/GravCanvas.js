@@ -59,16 +59,16 @@ class GravCanvas extends React.Component{
         ctx.rotate(this.angleBetweenPoints(vel) * Math.PI / 180)
         ctx.translate(-pos.x, -pos.y)
         let p = new Path2D()
-        p.moveTo(-width / 2 + pos.x, 0 + pos.y)
-        p.lineTo(width / 2 + pos.x, 0 + pos.y)
-        p.lineTo(width / 2 + pos.x,height + pos.y)
-        p.lineTo(width / 2 +10 + pos.x, height + pos.y)
-        p.lineTo(0 + pos.x, height + 20 + pos.y)
-        p.lineTo(0 - width / 2 - 10 + pos.x, height + pos.y)
-        p.lineTo(-width / 2 + pos.x, height + pos.y)
+        p.moveTo(-width / 2 + pos.x, 0 + pos.y + 5)
+        p.lineTo(width / 2 + pos.x, 0 + pos.y + 5)
+        p.lineTo(width / 2 + pos.x,height + pos.y+ 5)
+        p.lineTo(width / 2 +10 + pos.x, height + pos.y+5)
+        p.lineTo(0 + pos.x, height + 20 + pos.y+5)
+        p.lineTo(0 - width / 2 - 10 + pos.x, height + pos.y+5)
+        p.lineTo(-width / 2 + pos.x, height + pos.y+5)
         p.closePath()
         ctx.stroke(p)
-        // ctx.fill(p)
+        ctx.fill(p)
         this.arrows[idx] = p
         ctx.restore()
       })
@@ -112,17 +112,18 @@ class GravCanvas extends React.Component{
       }
       e.preventDefault();
       e.stopPropagation();
-      // See if we're inside any circles:
-      this.circles.forEach((circle, idx) => {
-        if (ctx.isPointInPath(circle, e.offsetX, e.offsetY)) {
-          this.setState({isDragging: true, whichBall: idx})
-        }
-      })
 
       locations.forEach((location, idx) => {
         // Edit the context here and wrap the test in context switch - then return to normal after
         if (arrowDetectSelect(location, idx, e)) {
           this.setState({draggingVectorIdx: idx, isVectorDragging: true,})
+        }
+      })
+
+      // See if we're inside any circles:
+      this.circles.forEach((circle, idx) => {
+        if (ctx.isPointInPath(circle, e.offsetX, e.offsetY)) {
+          this.setState({isDragging: true, whichBall: idx})
         }
       })
     }
@@ -190,7 +191,7 @@ class GravCanvas extends React.Component{
   }
   render() {
     return (
-      <canvas ref={this.canvasRef} style={{border:1, borderStyle: "solid"}}/>
+      <canvas ref={this.canvasRef} style={{border:1, borderStyle: "solid", backgroundColor: 'MidnightBlue'}}/>
     )
   }
 }

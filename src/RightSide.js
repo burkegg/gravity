@@ -1,19 +1,21 @@
 import React from 'react'
 const RightSide = props => {
   const { animationInfo } = props
+  let buttonStyle = {height: 30, fontSize: 20, borderStyle: 'solid', borderColor: 'black', marginBottom: 15}
   return (
-    <div id='rightSide' style={{ display: 'flex', flexDirection: 'column'}}>
+    <div id='rightSide' style={{ display: 'flex', flexDirection: 'column', marginLeft: 15}}>
       <h2 id='rightSideHeader'>
-        Right Side Header
+        Set up Sim
       </h2>
       <div id='addRemoveButtons' style={{ display: 'flex', flexDirection: 'column' }}>
-        <label htmlFor="numBallSelect">Select number of objects:</label>
+        <label htmlFor="numBallSelect" style={{marginBottom: 5}}>Select number of objects:</label>
 
         <select
           name="Number"
           id="numBallSelect"
           onChange={props.selectNumberBalls}
           disabled={props.running}
+          style={{marginBottom: 15, height: 30, fontSize: 20}}
         >
           <option value='select...'>Select...</option>
           <option value='1'>One</option>
@@ -25,13 +27,15 @@ const RightSide = props => {
           className='ballsButton'
           onClick={props.startHandler}
           disabled={!props.animationInfo.length}
+          style={buttonStyle}
         >
           {props.running ? "Stop" : "Start"}
         </button>
         <button
           className='ballsButton'
           onClick={props.reset}
-          disabled={props.running}>
+          disabled={props.running}
+          style={buttonStyle}>
           Reset
         </button>
         <div>
@@ -52,7 +56,11 @@ const RightSide = props => {
               </div>
             )
           })}
+          {props.animationInfo.length && <div>heyheyhey</div>}
         </div>
+      </div>
+      <div style={{position: 'absolute', bottom: 100, width: 200}}>
+        Drag masses and vectors to edit starting conditions.
       </div>
     </div>
 
