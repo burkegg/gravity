@@ -14,6 +14,8 @@ class GravitySim extends React.Component {
       allowDragging: true,
       isDragging: false,
       initPositions: [],
+      draggingVectorIdx: false,
+      isVectorDragging: false,
     }
     this.balls = new Balls(400)
   }
@@ -43,7 +45,7 @@ class GravitySim extends React.Component {
         break;
       case '2':
         b.addBall({x: 500, y: 500, Vx: 0, Vy: -20, mass: 1000, color: 'yellow'})
-        b.addBall({x: 870, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'blue'})
+        b.addBall({x: 50, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'blue'})
         break;
       case '3':
         b.addBall({x: 500, y: 500, Vx: 0, Vy: 1, mass: 1000, color: 'yellow'})
@@ -68,10 +70,16 @@ class GravitySim extends React.Component {
     let ballData = this.state.animationInfo[idx]
     this.balls.editBallLocation(idx, e)
     let data = this.balls.getBalls()
-    data.forEach((ball) => {
-      this.setState({animationInfo: data, initPositions: [...data]})
-    })
+    this.setState({animationInfo: data, initPositions: [...data]})
     this.setInitBallInfoState()
+  }
+
+  handleVectorDrag = (e, idx) => {
+    this.setState({ allowDragging: false })
+    console.log('handle idx:', idx)
+    this.balls.editBallVelocity(idx, e)
+    let data = this.balls.getBalls()
+    this.setState({ animationInfo: data, initPositions: [...data]})
   }
 
   resetPositionsToInit = () => {
@@ -95,7 +103,9 @@ class GravitySim extends React.Component {
           running={this.state.running}
           traces={this.state.traces}
           allowDragging={this.state.allowDragging}
-          handleDragDrop={this.handleDragDrop}/>
+          handleDragDrop={this.handleDragDrop}
+          handleVectorDrag={this.handleVectorDrag}
+          handleVectorDown={this.handleVectorDown}/>
         <RightSide
           running={this.state.running}
           startHandler={this.stopStart}

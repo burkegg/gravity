@@ -41,6 +41,25 @@ export class Balls {
     }
   }
 
+  editBallVelocity = (idx, ballData) => {
+    if (ballData) {
+      let data = this.ballsList[idx]
+      // ballData = { x: ###, y: ### }
+      // Get the new length of the vector and set that as V, and save Vx and Vy components
+      let initVelx = data.vel.x
+      let initVely = data.vel.y
+
+      let initPositionX = data.pos.x
+      let initPositionY = data.pos.y
+      let initPos = new Vector(data.pos.x, data.pos.y)
+      let ballDataVector = new Vector(ballData.x, ballData.y)
+
+      ballDataVector.subtract(initPos)
+      data.vel.x = ballDataVector.x
+      data.vel.y = ballDataVector.y
+    }
+  }
+
   getLatestData = () => {
     // given an index, return the positions of all the balls at that index
     let hist = this.locHistory

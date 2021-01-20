@@ -9,8 +9,7 @@ class GravCanvas extends React.Component{
       whichBall: null,
       dragOk: false,
       receivedLocs: false,
-      isDraggingVector: false,
-      vectorDragOk: false,
+
     }
     this.canvasRef = React.createRef();
     this.circles = []
@@ -88,8 +87,8 @@ class GravCanvas extends React.Component{
     let locations = this.ballLocs
 
     let arrowDetectSelect = (location, idx, e) => {
-      // Takes in locations of the balls and changes the context to the appropriately translated / rotated one.
-      // Will
+      // Takes in locations of the balls and changes the context to the appropriately translated / rotated one
+      // before looking at collision detection
       let arrow = this.arrows[idx]
       let pos = location.pos
       let vel = location.vel
@@ -99,9 +98,11 @@ class GravCanvas extends React.Component{
       ctx.rotate(this.angleBetweenPoints(vel) * Math.PI / 180)
       ctx.translate(-pos.x, -pos.y)
       if (ctx.isPointInPath(arrow, e.offsetX, e.offsetY)) {
-        console.log('inside arrow', idx)
+        ctx.restore()
+        return true
       }
       ctx.restore()
+      return false
     }
 
 
@@ -120,14 +121,16 @@ class GravCanvas extends React.Component{
 
       locations.forEach((location, idx) => {
         // Edit the context here and wrap the test in context switch - then return to normal after
-        arrowDetectSelect(location, idx, e)
+        if (arrowDetectSelect(location, idx, e)) {
+          this.setState({draggingVectorIdx: idx, isVectorDragging: true,})
+        }
       })
     }
 
     let handleMouseUp = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      this.setState({isDragging: false, whichBall: null})
+      this.setState({isDragging: false, whichBall: null, isVectorDragging: false, draggingVectorIdx: null})
     }
 
     let handleMouseMove = (e) => {
@@ -136,6 +139,9 @@ class GravCanvas extends React.Component{
         e.stopPropagation();
         let mouseInfo = this.getMousePos(e)
         this.props.handleDragDrop(mouseInfo, this.state.whichBall)
+      } else if (!running && this.state.isVectorDragging) {
+        let mouseInfo = this.getMousePos(e)
+        this.props.handleVectorDrag(mouseInfo, this.state.draggingVectorIdx)
       }
     }
     if (!running && allowDragging) {
