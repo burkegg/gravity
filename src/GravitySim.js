@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {Balls} from './Balls'
+import {Balls} from './tBalls'
 import RightSide from "./RightSide";
 import GravCanvas from './GravCanvas'
 
@@ -24,11 +24,10 @@ class GravitySim extends React.Component {
   }
   updateAnimationState = () => {
     if (this.state.running) {
-      this.balls.ballsList.forEach((ball, idx) => {
         let ballData = this.balls.moveBallSteps()
         this.setState({animationInfo: ballData})
-      })
     }
+
     this.rAF = requestAnimationFrame(this.updateAnimationState);
   }
   componentWillUnmount() {
