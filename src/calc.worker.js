@@ -18,13 +18,10 @@ function handleMotion(event) {
 
 
   if (event.data.type === 'running' && event.data.info === true) {
-    console.log("start!!!!")
     running = true
   }
-  console.log("event", event.data, running)
 
   if (event.data.type === 'running' && event.data.info === false) {
-    console.log("stop!!!!")
     running = false
     initDataNeedsVectors = []
     initData = []
@@ -50,7 +47,6 @@ function handleMotion(event) {
   }
 
   const applyForce = (ballData) => {
-    // RE-think
     let f = calcNetForce(ballData.ballIdx)
     let massVect = new Vector(ballData.mass, ballData.mass)
     f.divide(massVect)
@@ -92,8 +88,8 @@ function handleMotion(event) {
   }
 
   const startCalcs = () => {
-    while (running) {
-      for (let step = 0; step < 8000; step++) {
+    //   let startTime = performance.now();
+      for (let step = 0; step < 10000; step++) {
         let tempData = []
         initData.forEach((ball, ballNum) => {
           let tempOneBallData = applyForce(ball)
@@ -102,11 +98,11 @@ function handleMotion(event) {
         dataToWrite = tempData
         initData = tempData
       }
-      let endTime = performance.now();
+      // let endTime = performance.now();
       // var timeDiff = endTime - startTime;
       // console.log(timeDiff + " ms");
+
       this.postMessage(dataToWrite)
-    }
   }
 
   if (running) {
@@ -114,7 +110,7 @@ function handleMotion(event) {
     initData = initDataNeedsVectors.map(ballData => {
       return {pos: new Vector(ballData.pos.x, ballData.pos.y), vel: new Vector(ballData.vel.x, ballData.vel.y), color: ballData.color, mass: ballData.mass, ballIdx: ballData.ballIdx}
     })
-    startCalcs()
+    this.setInterval(startCalcs, 20)
   }
 
 

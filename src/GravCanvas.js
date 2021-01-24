@@ -27,7 +27,6 @@ class GravCanvas extends React.Component{
     const { locations } = this.props
 
     this.ballLocs = [...locations]
-    const canvas = this.canvasRef.current
     if (!this.props.traces) {
       this.backGround()
     }

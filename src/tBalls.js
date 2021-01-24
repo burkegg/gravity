@@ -53,7 +53,6 @@ export class Balls {
   editBallVelocity = (idx, ballData) => {
     if (ballData) {
       let data = this.initData[idx]
-      // ballData = { x: ###, y: ### }
       // Get the new length of the vector and set that as V, and save Vx and Vy components
 
       let initPos = new Vector(data.pos.x, data.pos.y)
@@ -84,8 +83,8 @@ export class Balls {
     // let startTime = performance.now();
     // this.worker.postMessage(1);
     // this.worker.addEventListener('message', event => {console.log('worker response:', event)});
-    let iterateEachInTurn = []
-    let dataToWrite = []
+    // let iterateEachInTurn = []
+    // let dataToWrite = []
     for (let step = 0; step < 10000; step++) {
       let tempData = []
       this.initData.forEach((ball, ballNum) => {

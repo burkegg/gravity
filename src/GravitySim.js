@@ -30,6 +30,7 @@ class GravitySim extends React.Component {
         awaitingData: false,
       })
     })
+    console.log('Basic worker version')
   }
 
   updateAnimationState = () => {
@@ -38,6 +39,7 @@ class GravitySim extends React.Component {
 
   componentWillUnmount() {
     cancelAnimationFrame(this.rAF);
+    this.worker.terminate()
   }
 
   selectNumberBalls = (e) => {
