@@ -69,7 +69,6 @@ class GravitySim extends React.Component {
   }
   stopStart = (e) => {
     this.setState({running: !this.state.running}, () => {
-      console.log("PRE postMessage", this.state.running)
       this.worker.postMessage({type: 'running', info: this.state.running, animationInfo: this.state.animationInfo})
       if (!this.state.running) {
         this.worker.terminate()
@@ -82,10 +81,6 @@ class GravitySim extends React.Component {
         })
       }
     })
-
-    console.log('stopstart')
-
-    // this.worker.postMessage({type: 'data', info: this.state.animationInfo})
   }
 
   handleDragDrop = (e, idx) => {
