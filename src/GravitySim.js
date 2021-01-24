@@ -3,6 +3,7 @@ import React from 'react'
 import {Balls} from './tBalls'
 import RightSide from "./RightSide";
 import GravCanvas from './GravCanvas'
+import MyWorker from './calc.worker'
 
 class GravitySim extends React.Component {
   constructor(props) {
@@ -16,20 +17,25 @@ class GravitySim extends React.Component {
       initPositions: [],
       draggingVectorIdx: false,
       isVectorDragging: false,
+      awaitingData: false,
     }
     this.balls = new Balls(400)
+    this.worker = new MyWorker()
   }
   componentDidMount() {
     this.rAF = requestAnimationFrame(this.updateAnimationState);
+    this.worker.addEventListener('message', event => {
+      this.setState({
+        animationInfo: event.data,
+        awaitingData: false,
+      })
+    })
   }
-  updateAnimationState = () => {
-    if (this.state.running) {
-        let ballData = this.balls.moveBallSteps()
-        this.setState({animationInfo: ballData})
-    }
 
+  updateAnimationState = () => {
     this.rAF = requestAnimationFrame(this.updateAnimationState);
   }
+
   componentWillUnmount() {
     cancelAnimationFrame(this.rAF);
   }
@@ -60,12 +66,30 @@ class GravitySim extends React.Component {
     this.setInitBallInfoState()
   }
   stopStart = (e) => {
-    this.setState({running: !this.state.running})
+    this.setState({running: !this.state.running}, () => {
+      console.log("PRE postMessage", this.state.running)
+      this.worker.postMessage({type: 'running', info: this.state.running, animationInfo: this.state.animationInfo})
+      if (!this.state.running) {
+        this.worker.terminate()
+        this.worker = new MyWorker()
+        this.worker.addEventListener('message', event => {
+          this.setState({
+            animationInfo: event.data,
+            awaitingData: false,
+          })
+        })
+      }
+    })
+
+    console.log('stopstart')
+
+    // this.worker.postMessage({type: 'data', info: this.state.animationInfo})
   }
 
   handleDragDrop = (e, idx) => {
     this.setState({allowDragging: false})
-    let ballData = this.state.animationInfo[idx]
+    // let ballData = this.state.animationInfo[idx]
+    this.balls.updateBallData(this.state.animationInfo)
     this.balls.editBallLocation(idx, e)
     let data = this.balls.getBalls()
     this.setState({animationInfo: data, initPositions: [...data]})

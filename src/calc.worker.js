@@ -1,23 +1,36 @@
 // eslint-disable-next-line no-restricted-globals
-self.addEventListener("message", startCounter);
+self.addEventListener("message", handleMotion);
 let Vector = require('victor');
 
-
-function startCounter(event) {
+// expecting: event.data = {type: '
+function handleMotion(event) {
   // eslint-disable-next-line no-restricted-globals
-  let startTime = performance.now();
-  let sizeTimestep = 0.00002
+
+  let sizeTimestep = 0.000015
   let G = 400
-  let initDataNeedsVectors = event.data[0]
+  // let initData = event.data
+  let initDataNeedsVectors = []
+  let initData = []
+
+
   let dataToWrite = []
+  let running = false
 
-  let initData = initDataNeedsVectors.map(ballData => {
-    return {pos: new Vector(ballData.pos.x, ballData.pos.y), vel: new Vector(ballData.vel.x, ballData.vel.y), color: ballData.color, mass: ballData.mass, ballIdx: ballData.ballIdx}
-  })
 
-  console.log('initData in worker', initData)
+  if (event.data.type === 'running' && event.data.info === true) {
+    console.log("start!!!!")
+    running = true
+  }
+  console.log("event", event.data, running)
+
+  if (event.data.type === 'running' && event.data.info === false) {
+    console.log("stop!!!!")
+    running = false
+    initDataNeedsVectors = []
+    initData = []
+  }
+
   const calcOneForce = (ballData1, ballData2) => {
-
 
     // given which ball (e.g. ball1, ball2....) by index (0, 1, 2...)
     // so we can get their mass and maybe look up other properties later if we need.
@@ -41,7 +54,6 @@ function startCounter(event) {
     let f = calcNetForce(ballData.ballIdx)
     let massVect = new Vector(ballData.mass, ballData.mass)
     f.divide(massVect)
-
     f.multiplyScalar(sizeTimestep)
     // create new vel and pos vectors and push them into history
     let newVel  = new Vector(ballData.vel.x, ballData.vel.y)
@@ -79,29 +91,31 @@ function startCounter(event) {
     return netForce
   }
 
-
-
-
-  if (event.data[0].length) {
-    for (let step = 0; step < 10000; step++) {
-      let tempData = []
-      initData.forEach((ball, ballNum) => {
-        let tempOneBallData = applyForce(ball)
-        tempData[ballNum] = tempOneBallData
-      })
-      dataToWrite = tempData
+  const startCalcs = () => {
+    while (running) {
+      for (let step = 0; step < 8000; step++) {
+        let tempData = []
+        initData.forEach((ball, ballNum) => {
+          let tempOneBallData = applyForce(ball)
+          tempData[ballNum] = tempOneBallData
+        })
+        dataToWrite = tempData
+        initData = tempData
+      }
+      let endTime = performance.now();
+      // var timeDiff = endTime - startTime;
+      // console.log(timeDiff + " ms");
+      this.postMessage(dataToWrite)
     }
-
-    let endTime = performance.now();
-    var timeDiff = endTime - startTime;
-    console.log(timeDiff + " ms");
-    this.postMessage(dataToWrite)
   }
 
-
-
-
-
+  if (running) {
+    initDataNeedsVectors = event.data.animationInfo
+    initData = initDataNeedsVectors.map(ballData => {
+      return {pos: new Vector(ballData.pos.x, ballData.pos.y), vel: new Vector(ballData.vel.x, ballData.vel.y), color: ballData.color, mass: ballData.mass, ballIdx: ballData.ballIdx}
+    })
+    startCalcs()
+  }
 
 
 }

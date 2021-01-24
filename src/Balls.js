@@ -86,19 +86,19 @@ export class Balls {
   }
 
   moveBallSteps = (ballNum) => {
-    // let startTime = performance.now();
+    let startTime = performance.now();
 
     let iterateEachInTurn = []
-    for (let step = 0; step < 8000; step++) {
+    for (let step = 0; step < 10000; step++) {
       this.ballsList.forEach((ball, ballNum) => {
         let tempOneBallData = this.applyForce(ballNum)
         iterateEachInTurn[ballNum] = tempOneBallData
       })
     }
     // TODO:  put the current position into the balls in ballsList and everything uses that
-    // let endTime = performance.now();
-    // var timeDiff = endTime - startTime;
-    // console.log(timeDiff + " ms");
+    let endTime = performance.now();
+    var timeDiff = endTime - startTime;
+    console.log(timeDiff + " ms");
     return iterateEachInTurn
   }
 
@@ -117,7 +117,7 @@ export class Balls {
     let massVect = new Vector(mass, mass)
     let a = f2.divide(massVect)
     a.multiplyScalar(this.sizeTimestep)
-
+    // create new vel and pos vectors and push them into history
     let newVel  = new Vector(currVel.x, currVel.y)
     let newPos = new Vector(ballData[idx].pos.x, ballData[idx].pos.y)
     /*
@@ -128,6 +128,7 @@ export class Balls {
     let deltaPos = new Vector(newVel.x, newVel.y)
     deltaPos.multiplyScalar(this.sizeTimestep)
 
+    // newVel.multiplyScalar(.5)
     /*
     v = xf - xo / t
     xf = vt + xo
@@ -220,7 +221,5 @@ export class Balls {
     return allBallData
   }
 
-  updateHistory = (idx, data) => {
-    this.locHistory[idx].push(data)
-  }
+
 }

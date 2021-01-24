@@ -8,7 +8,7 @@ export class Balls {
     this.numThreads = numThreads
     this.currTimestep = 0
     this.numTimesteps = 0
-    this.sizeTimestep = .00001
+    this.sizeTimestep = .000015
     this.initData = []
     this.nextData = []
     this.threadPool = []
@@ -43,6 +43,11 @@ export class Balls {
       data.pos.y = locData.y
     }
     this.nextData = [...this.initData]
+  }
+
+  updateBallData = (data) => {
+    this.initData = [...data]
+    this.nextData = [...data]
   }
 
   editBallVelocity = (idx, ballData) => {
