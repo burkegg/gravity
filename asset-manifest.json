@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/gravity/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/gravity/static/js/main.cd8eed85.chunk.js",
-    "main.js.map": "/gravity/static/js/main.cd8eed85.chunk.js.map",
+    "main.js": "/gravity/static/js/main.940c7534.chunk.js",
+    "main.js.map": "/gravity/static/js/main.940c7534.chunk.js.map",
     "runtime-main.js": "/gravity/static/js/runtime-main.48a7d411.js",
     "runtime-main.js.map": "/gravity/static/js/runtime-main.48a7d411.js.map",
     "static/js/2.d7c6cc0a.chunk.js": "/gravity/static/js/2.d7c6cc0a.chunk.js",
@@ -11,12 +11,14 @@
     "static/js/3.3a41c057.chunk.js.map": "/gravity/static/js/3.3a41c057.chunk.js.map",
     "index.html": "/gravity/index.html",
     "static/css/main.6dea0f05.chunk.css.map": "/gravity/static/css/main.6dea0f05.chunk.css.map",
-    "static/js/2.d7c6cc0a.chunk.js.LICENSE.txt": "/gravity/static/js/2.d7c6cc0a.chunk.js.LICENSE.txt"
+    "static/js/2.d7c6cc0a.chunk.js.LICENSE.txt": "/gravity/static/js/2.d7c6cc0a.chunk.js.LICENSE.txt",
+    "static/js/calc.worker.c00cd5d9.worker.js": "/gravity/static/js/calc.worker.c00cd5d9.worker.js",
+    "static/js/calc.worker.c00cd5d9.worker.js.map": "/gravity/static/js/calc.worker.c00cd5d9.worker.js.map"
   },
   "entrypoints": [
     "static/js/runtime-main.48a7d411.js",
     "static/js/2.d7c6cc0a.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.cd8eed85.chunk.js"
+    "static/js/main.940c7534.chunk.js"
   ]
 }
