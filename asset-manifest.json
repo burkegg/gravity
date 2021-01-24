@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/gravity/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/gravity/static/js/main.a1c942e0.chunk.js",
-    "main.js.map": "/gravity/static/js/main.a1c942e0.chunk.js.map",
+    "main.js": "/gravity/static/js/main.bd89d411.chunk.js",
+    "main.js.map": "/gravity/static/js/main.bd89d411.chunk.js.map",
     "runtime-main.js": "/gravity/static/js/runtime-main.48a7d411.js",
     "runtime-main.js.map": "/gravity/static/js/runtime-main.48a7d411.js.map",
     "static/js/2.d7c6cc0a.chunk.js": "/gravity/static/js/2.d7c6cc0a.chunk.js",
@@ -19,6 +19,6 @@
     "static/js/runtime-main.48a7d411.js",
     "static/js/2.d7c6cc0a.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.a1c942e0.chunk.js"
+    "static/js/main.bd89d411.chunk.js"
   ]
 }
