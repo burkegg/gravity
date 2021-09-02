@@ -9,22 +9,45 @@ function handleMotion(event) {
   let sizeTimestep = 0.000015
   let G = 400
   // let initData = event.data
-  let initDataNeedsVectors = []
   let initData = []
 
 
   let dataToWrite = []
   let running = false
 
+  let centerOfMass = new Vector(0, 0)
+  let centerOnMass = false
 
-  if (event.data.type === 'running' && event.data.info === true) {
+
+
+  const init = () => {
+    initData = event.data.animationInfo.map(ballData => {
+      return {pos: new Vector(ballData.pos.x, ballData.pos.y), vel: new Vector(ballData.vel.x, ballData.vel.y), color: ballData.color, mass: ballData.mass, ballIdx: ballData.ballIdx}
+    })
+    centerOfMass = calcCenterOfMass(initData)
     running = true
+    centerOnMass = event.data.centerOnMass
   }
 
-  if (event.data.type === 'running' && event.data.info === false) {
-    running = false
-    initDataNeedsVectors = []
-    initData = []
+  // returns com
+  const calcCenterOfMass = (ballData) => {
+    /*
+    com = x1m1 + x2m2 ... / totalmass
+     */
+
+    let totalMass = 0
+    let XweightedMasses = 0
+    let YweightedMasses = 0
+    for (let i = 0; i < ballData.length; i++) {
+      totalMass += ballData[i].mass
+      XweightedMasses += ballData[i].mass * ballData[i].pos.x
+      YweightedMasses += ballData[i].mass * ballData[i].pos.y
+    }
+    let comX = XweightedMasses / totalMass
+    let comY = YweightedMasses / totalMass
+    let com = new Vector(comX, comY)
+    // console.log("COM: ", com)
+    return com
   }
 
   const calcOneForce = (ballData1, ballData2) => {
@@ -89,29 +112,39 @@ function handleMotion(event) {
 
   const startCalcs = () => {
     //   let startTime = performance.now();
-      for (let step = 0; step < 10000; step++) {
-        let tempData = []
-        initData.forEach((ball, ballNum) => {
-          let tempOneBallData = applyForce(ball)
-          tempData[ballNum] = tempOneBallData
-        })
-        dataToWrite = tempData
-        initData = tempData
-      }
-      // let endTime = performance.now();
-      // var timeDiff = endTime - startTime;
-      // console.log(timeDiff + " ms");
+    let comInit = centerOfMass
 
-      this.postMessage(dataToWrite)
+    for (let step = 0; step < 10000; step++) {
+      let tempData = []
+      initData.forEach((ball, ballNum) => {
+        let tempOneBallData = applyForce(ball)
+        tempData[ballNum] = tempOneBallData
+      })
+      initData = tempData
+    }
+    // let endTime = performance.now();
+    // var timeDiff = endTime - startTime;
+    // console.log(timeDiff + " ms");
+    if (centerOnMass) {
+      let comFin = calcCenterOfMass(initData)
+      comFin.subtract(comInit)
+      initData.forEach(ballData => {
+        ballData.pos.x = ballData.pos.x - comFin.x
+        ballData.pos.y = ballData.pos.y - comFin.y
+      })
+      centerOfMass = calcCenterOfMass(initData)
+    }
+    this.postMessage(initData)
   }
 
-  if (running) {
-    initDataNeedsVectors = event.data.animationInfo
-    initData = initDataNeedsVectors.map(ballData => {
-      return {pos: new Vector(ballData.pos.x, ballData.pos.y), vel: new Vector(ballData.vel.x, ballData.vel.y), color: ballData.color, mass: ballData.mass, ballIdx: ballData.ballIdx}
-    })
+
+  if (event.data.type === 'running' && event.data.info === true) {
+    init()
     this.setInterval(startCalcs, 20)
   }
 
-
+  if (event.data.type === 'running' && event.data.info === false) {
+    running = false
+    initData = []
+  }
 }

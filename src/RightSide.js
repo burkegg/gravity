@@ -1,6 +1,6 @@
 import React from 'react'
 const RightSide = props => {
-  const { animationInfo } = props
+  const { animationInfo, running } = props
   let buttonStyle = {height: 30, fontSize: 20, borderStyle: 'solid', borderColor: 'black', marginBottom: 15}
   return (
     <div id='rightSide' style={{ display: 'flex', flexDirection: 'column', marginLeft: 15}}>
@@ -39,8 +39,12 @@ const RightSide = props => {
           Reset
         </button>
         <div>
-        <input type='checkbox' id='traceBox' name='traceBox' value='traces' onChange={props.toggleTraces} style={{width: 20, height: 20}}/>
+        <input type='checkbox' id='traceBox' name='traces' value='traces' onChange={props.toggleHandler} style={{width: 20, height: 20, marginBottom: 15}}/>
           <label htmlFor='traceBox'>Show Traces</label>
+        </div>
+        <div>
+          <input disabled={running} type='checkbox' id='centerMassBox' name='centerOnMass' value='centerOnMass' onChange={props.toggleHandler} style={{width: 20, height: 20}}/>
+          <label htmlFor='centerMassBox'>Track system's center of mass</label>
         </div>
         <div id='mass-section'>
           {props.animationInfo.map((ballInfo, idx) => {
