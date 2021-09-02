@@ -1,24 +1,24 @@
 {
   "files": {
     "main.css": "/gravity/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/gravity/static/js/main.bd89d411.chunk.js",
-    "main.js.map": "/gravity/static/js/main.bd89d411.chunk.js.map",
-    "runtime-main.js": "/gravity/static/js/runtime-main.48a7d411.js",
-    "runtime-main.js.map": "/gravity/static/js/runtime-main.48a7d411.js.map",
-    "static/js/2.d7c6cc0a.chunk.js": "/gravity/static/js/2.d7c6cc0a.chunk.js",
-    "static/js/2.d7c6cc0a.chunk.js.map": "/gravity/static/js/2.d7c6cc0a.chunk.js.map",
-    "static/js/3.3a41c057.chunk.js": "/gravity/static/js/3.3a41c057.chunk.js",
-    "static/js/3.3a41c057.chunk.js.map": "/gravity/static/js/3.3a41c057.chunk.js.map",
+    "main.js": "/gravity/static/js/main.f9bd04b2.chunk.js",
+    "main.js.map": "/gravity/static/js/main.f9bd04b2.chunk.js.map",
+    "runtime-main.js": "/gravity/static/js/runtime-main.d183593e.js",
+    "runtime-main.js.map": "/gravity/static/js/runtime-main.d183593e.js.map",
+    "static/js/2.5af0516e.chunk.js": "/gravity/static/js/2.5af0516e.chunk.js",
+    "static/js/2.5af0516e.chunk.js.map": "/gravity/static/js/2.5af0516e.chunk.js.map",
+    "static/js/3.68df5710.chunk.js": "/gravity/static/js/3.68df5710.chunk.js",
+    "static/js/3.68df5710.chunk.js.map": "/gravity/static/js/3.68df5710.chunk.js.map",
     "index.html": "/gravity/index.html",
     "static/css/main.6dea0f05.chunk.css.map": "/gravity/static/css/main.6dea0f05.chunk.css.map",
-    "static/js/2.d7c6cc0a.chunk.js.LICENSE.txt": "/gravity/static/js/2.d7c6cc0a.chunk.js.LICENSE.txt",
-    "static/js/calc.worker.c00cd5d9.worker.js": "/gravity/static/js/calc.worker.c00cd5d9.worker.js",
-    "static/js/calc.worker.c00cd5d9.worker.js.map": "/gravity/static/js/calc.worker.c00cd5d9.worker.js.map"
+    "static/js/2.5af0516e.chunk.js.LICENSE.txt": "/gravity/static/js/2.5af0516e.chunk.js.LICENSE.txt",
+    "static/js/calc.worker.28b2d6c1.worker.js": "/gravity/static/js/calc.worker.28b2d6c1.worker.js",
+    "static/js/calc.worker.28b2d6c1.worker.js.map": "/gravity/static/js/calc.worker.28b2d6c1.worker.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.48a7d411.js",
-    "static/js/2.d7c6cc0a.chunk.js",
+    "static/js/runtime-main.d183593e.js",
+    "static/js/2.5af0516e.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.bd89d411.chunk.js"
+    "static/js/main.f9bd04b2.chunk.js"
   ]
 }
