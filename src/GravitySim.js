@@ -18,6 +18,7 @@ class GravitySim extends React.Component {
       draggingVectorIdx: false,
       isVectorDragging: false,
       awaitingData: false,
+      centerOnMass: false,
     }
     this.balls = new Balls(400)
     this.worker = new MyWorker()
@@ -69,7 +70,7 @@ class GravitySim extends React.Component {
   }
   stopStart = (e) => {
     this.setState({running: !this.state.running}, () => {
-      this.worker.postMessage({type: 'running', info: this.state.running, animationInfo: this.state.animationInfo})
+      this.worker.postMessage({type: 'running', info: this.state.running, animationInfo: this.state.animationInfo, centerOnMass: this.state.centerOnMass})
       if (!this.state.running) {
         this.worker.terminate()
         this.worker = new MyWorker()
@@ -109,8 +110,8 @@ class GravitySim extends React.Component {
     let data = this.balls.getBalls()
     this.setState({animationInfo: data, initPositions: [...data]})
   }
-  toggleTraces = (e) => {
-    this.setState({traces: !this.state.traces})
+  toggleHandler = (e) => {
+    this.setState({[e.target.name]: !this.state[e.target.name]})
   }
   handleChangeMass = (e) => {
     let newMass = e.target.valueAsNumber
@@ -138,7 +139,7 @@ class GravitySim extends React.Component {
           startHandler={this.stopStart}
           selectNumberBalls={this.selectNumberBalls}
           animationInfo={this.state.animationInfo}
-          toggleTraces={this.toggleTraces}
+          toggleHandler={this.toggleHandler}
           reset={this.resetPositionsToInit}
           handleChangeMass={this.handleChangeMass}/>
       </React.Fragment>
