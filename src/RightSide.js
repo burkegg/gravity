@@ -62,8 +62,11 @@ const RightSide = props => {
           })}
         </div>
       </div>
+      <div style={{ marginTop: 25, padding: 10, }}>
+        Try changing the length of the vectors or moving the planets around!
+      </div>
       <div style={{position: 'absolute', bottom: 100, width: 200}}>
-        Drag masses and vectors to edit starting conditions.
+        <a href="https://github.com/burkegg/gravity" target={"_blank"}>Source code on Github</a>
       </div>
     </div>
 
