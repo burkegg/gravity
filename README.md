@@ -32,3 +32,33 @@ For example, you have to iterate several thousand times before each animation in
 1.  Javascript's performance:  I was surprised that the browser could handle the calculations for a dozen objects interacting, doing a couple thousand iterations per animation frame.  I've had to solve memory leaks in the browser - but never had an intuition for "how much can the browser take" until now.
 
 1.  Comparing JS / Go:  The real performance gains came from doing the calculations in Go and then getting data to the browser at the right rate.  It was easy to have Go spit out data for a couple thousand particles - or spit out data for 6 particles way faster than an animation would use it.  It was so fast, in fact, that it filled up the browser's memory pretty quickly.  The easiest thing to do, and therefore what I did, was slow down the server a bit until it matched a useful rate for the browser.
+
+
+### Bonus Lessons!
+
+1.  You can layer canvases with z-index and then animate some or all.
+
+I wanted to make the traces look a little better than simply blobs the size of the objects.  To do that I'd need to show
+the history of where the ball was in the past.  I thought about doing this by keeping the ball's location history into
+perpetuity, and then re-drawing all of the points with each frame.  That was a disaster.  It worked for a bit, but soon 
+the browser was trying to draw thousands of dots with each frame.  I came up with some elaborate plans for ways it might work
+but finally read more about the canvas on mdn and google developers site.  You can layer canvases on top of each other, and
+since it's transparent by default, you get a lot of flexibility.  My initial confusion came from needing to clear the canvas for
+motion.  The circles themselves need to be erased after each frame or you end up with traces of where they have been.  So that
+layer needs to be cleared before each frame refresh.  The other layer, however, does not need to be refreshed.  You just 
+draw the points one at a time and never clear that layer.
+
+
+2.  Absolute positioning has some quirky limitations.
+
+I needed to layer canvases on top of each other, and absolute positioning seemed like a good way to go.  Unfortunately I
+was sizing the canvas after the initial page render, and apparently that doesn't work with absolute positioning.
+
+3.  The canvas has a resolution size, and also a style size.
+
+Make these the same or you're going to get some weird scaling behavior.  I spent an hour trying to figure out why the mouse
+click wasn't registering inside of the circles.  My confusion was
+compounded because it looked like the offset was similar to some of my margins.  Finally I noticed a spot where I had forgotten
+to update the style size to match the resolution size - and the scale factor just happened to match a margin somewhere unrelated.
+
+

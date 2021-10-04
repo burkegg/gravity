@@ -3,7 +3,7 @@ const RightSide = props => {
   const { animationInfo, running } = props
   let buttonStyle = {height: 30, fontSize: 20, borderStyle: 'solid', borderColor: 'black', marginBottom: 15}
   return (
-    <div id='rightSide' style={{ display: 'flex', flexDirection: 'column', marginLeft: 15}}>
+    <div id='rightSide' style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, width: 200}}>
       <h2 id='rightSideHeader'>
         Set up Sim
       </h2>

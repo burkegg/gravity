@@ -51,7 +51,7 @@ class GravitySim extends React.Component {
         b.addBall({x: 500, y: 500, Vx: 0, Vy: 1, mass: 1000, color: 'yellow'})
         break;
       case '2':
-        b.addBall({x: 500, y: 500, Vx: 0, Vy: -20, mass: 1000, color: 'yellow'})
+        b.addBall({x: 500, y: 500, Vx: 0, Vy: 20, mass: 1000, color: 'yellow'})
         b.addBall({x: 50, y: 500, Vx: 0, Vy: -25, mass: 20, color: 'aqua'})
         break;
       case '3':
@@ -125,24 +125,24 @@ class GravitySim extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
-        <GravCanvas
-          locations={this.state.animationInfo}
-          running={this.state.running}
-          traces={this.state.traces}
-          allowDragging={this.state.allowDragging}
-          handleDragDrop={this.handleDragDrop}
-          handleVectorDrag={this.handleVectorDrag}
-          handleVectorDown={this.handleVectorDown}/>
+      <div style={{display: 'flex', flexDirection: 'row', width: "100%", height: "100%"}}>
+           <GravCanvas
+             locations={this.state.animationInfo}
+             running={this.state.running}
+             traces={this.state.traces}
+             allowDragging={this.state.allowDragging}
+             handleDragDrop={this.handleDragDrop}
+             handleVectorDrag={this.handleVectorDrag}
+             handleVectorDown={this.handleVectorDown}/>
         <RightSide
-          running={this.state.running}
-          startHandler={this.stopStart}
-          selectNumberBalls={this.selectNumberBalls}
-          animationInfo={this.state.animationInfo}
-          toggleHandler={this.toggleHandler}
-          reset={this.resetPositionsToInit}
-          handleChangeMass={this.handleChangeMass}/>
-      </React.Fragment>
+               running={this.state.running}
+               startHandler={this.stopStart}
+               selectNumberBalls={this.selectNumberBalls}
+               animationInfo={this.state.animationInfo}
+               toggleHandler={this.toggleHandler}
+               reset={this.resetPositionsToInit}
+               handleChangeMass={this.handleChangeMass}/>
+      </div>
     )
   }
 }
