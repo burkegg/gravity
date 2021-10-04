@@ -9,30 +9,47 @@ class GravCanvas extends React.Component{
       whichBall: null,
       dragOk: false,
       receivedLocs: false,
-
     }
     this.canvasRef = React.createRef();
+    this.backGroundCanvasRef = React.createRef();
+
     this.circles = []
     this.arrows = []
     this.ballLocs = []
   }
 
   componentDidMount() {
-    this.canvasRef.current.width = document.getElementById('canvasContainer').clientWidth * 0.8
-    this.canvasRef.current.height = document.getElementById('canvasContainer').clientHeight
-    // this.addBallEventListeners()
+    this.canvasRef.current.width = 1100
+    this.canvasRef.current.height = 1000
+
+    this.backGroundCanvasRef.current.width = 1100
+    this.backGroundCanvasRef.current.height = 1000
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { locations } = this.props
 
     this.ballLocs = [...locations]
-    if (!this.props.traces) {
-      this.backGround()
+
+    // we've turned off traces
+    if (!this.props.traces && prevProps.traces) {
+      this.backGround(this.backGroundCanvasRef)
     }
+
+    if (this.props.running && !prevProps.running) {
+      this.backGround(this.backGroundCanvasRef)
+    }
+
+    if (this.props.traces) {
+      locations.forEach((ball, idx) => {
+        this.showBall(ball.pos.x, ball.pos.y, ball.mass, idx, ball.color, this.backGroundCanvasRef, true)
+      })
+    }
+    this.backGround(this.canvasRef)
     locations.forEach((ball, idx) => {
-      this.showBall(ball.pos.x, ball.pos.y, ball.mass, idx, ball.color)
+      this.showBall(ball.pos.x, ball.pos.y, ball.mass, idx, ball.color, this.canvasRef, false)
     })
+
     this.drawArrows()
     if (locations.length && !this.state.receivedLocs) {
       this.setState({receivedLocs: true}, () => {
@@ -151,8 +168,8 @@ class GravCanvas extends React.Component{
     }
   }
 
-  showBall = (x, y, m, idx, color) => {
-    const canvas = this.canvasRef.current;
+  showBall = (x, y, m, idx, color, canvasRef, isBackground = false) => {
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     // Create circle
     const circle = new Path2D();
@@ -167,6 +184,9 @@ class GravCanvas extends React.Component{
       r = 8
     } else {
       r = 6
+    }
+    if (isBackground) {
+      r = 1;
     }
     circle.arc(Math.round(x), Math.round(y), r, 0, 2 * Math.PI);
     ctx.fillStyle = color;
@@ -183,16 +203,19 @@ class GravCanvas extends React.Component{
     };
   }
 
-  backGround = () => {
-    const canvas = this.canvasRef.current;
+  backGround = (canvasRef) => {
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
   }
   render() {
     return (
-      <canvas ref={this.canvasRef} style={{border:1, borderStyle: "solid", backgroundColor: 'MidnightBlue'}}/>
+        <div style={{position: "relative", width: 1100, height: 1000 }}>
+          <canvas ref={this.backGroundCanvasRef} style={{width: 1100, height: 1000, position: 'absolute', left: 0, top: 0, backgroundColor: 'MidnightBlue', zIndex: 1}}/>
+          <canvas ref={this.canvasRef} style={{width: 1100, height: 1000, position: 'absolute', left: 0, top: 0, zIndex: 2}}/>
+        </div>
     )
   }
-}
+};
 
 export default GravCanvas
