@@ -12,6 +12,8 @@ class GravCanvas extends React.Component{
 
     }
     this.canvasRef = React.createRef();
+    this.backGroundCanvasRef = React.createRef();
+
     this.circles = []
     this.arrows = []
     this.ballLocs = []
@@ -20,18 +22,26 @@ class GravCanvas extends React.Component{
   componentDidMount() {
     this.canvasRef.current.width = document.getElementById('canvasContainer').clientWidth * 0.8
     this.canvasRef.current.height = document.getElementById('canvasContainer').clientHeight
-    // this.addBallEventListeners()
+
+    this.backGroundCanvasRef.current.width = document.getElementById('canvasContainer').clientWidth * 0.8
+    this.backGroundCanvasRef.current.height = document.getElementById('canvasContainer').clientHeight
+
   }
 
   componentDidUpdate() {
     const { locations } = this.props
 
     this.ballLocs = [...locations]
-    if (!this.props.traces) {
-      this.backGround()
+    this.backGround()
+
+    if (this.props.traces) {
+      locations.forEach((ball, idx) => {
+        this.showBall(ball.pos.x, ball.pos.y, ball.mass, idx, ball.color, this.backGroundCanvasRef, true)
+      })
+
     }
     locations.forEach((ball, idx) => {
-      this.showBall(ball.pos.x, ball.pos.y, ball.mass, idx, ball.color)
+      this.showBall(ball.pos.x, ball.pos.y, ball.mass, idx, ball.color, this.canvasRef, false)
     })
     this.drawArrows()
     if (locations.length && !this.state.receivedLocs) {
@@ -151,8 +161,8 @@ class GravCanvas extends React.Component{
     }
   }
 
-  showBall = (x, y, m, idx, color) => {
-    const canvas = this.canvasRef.current;
+  showBall = (x, y, m, idx, color, canvasRef, isBackgroundj = false) => {
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     // Create circle
     const circle = new Path2D();
@@ -167,6 +177,9 @@ class GravCanvas extends React.Component{
       r = 8
     } else {
       r = 6
+    }
+    if (isBackgroundj) {
+      r = 1;
     }
     circle.arc(Math.round(x), Math.round(y), r, 0, 2 * Math.PI);
     ctx.fillStyle = color;
@@ -190,7 +203,11 @@ class GravCanvas extends React.Component{
   }
   render() {
     return (
-      <canvas ref={this.canvasRef} style={{border:1, borderStyle: "solid", backgroundColor: 'MidnightBlue'}}/>
+      <div>
+        <canvas ref={this.canvasRef} style={{border:1, borderStyle: "solid", backgroundColor: 'MidnightBlue', zIndex: 2}}/>
+        <canvas ref={this.backGroundCanvasRef} style={{border:1, borderStyle: "solid", backgroundColor: 'MidnightBlue', zIndex: 1}}/>
+
+      </div>
     )
   }
 }
